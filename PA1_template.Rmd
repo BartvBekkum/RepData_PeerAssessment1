@@ -3,12 +3,14 @@ title: "ReprRes_2"
 author: "B. van Bekkum"
 date: "7 januari 2018"
 output:
-  html_document: 
-     keep_md: yes
+  md_document:
+    variant: markdown_github
 ---
 
-#Loading and preprocessing the data
-## load the data:
+# Loading and preprocessing the data
+
+## Load the data:
+
 ```{r echo=TRUE, warning=FALSE, message=FALSE}
 
 setwd("~/Coursera/5_RerpRes/Data")
@@ -18,7 +20,8 @@ library(ggplot2)
 myset <- read.csv("activity.csv", colClasses = "character")
 ```
 
-## preprocess the data:
+## Preprocess the data:
+
 ```{r echo=TRUE}
 myset$steps <- as.numeric(myset$steps)
 myset$date <- as.Date(myset$date, format = "%Y-%m-%d")
@@ -26,7 +29,7 @@ myset$interval <- as.numeric(myset$interval)
 ```
 
 
-#What is mean total number of steps taken per day?
+# What is mean total number of steps taken per day?
 
 ## A histogram of the total number of steps per day:
 ```{r echo=TRUE}
@@ -35,26 +38,28 @@ hist(stpsday$totalsteps, main = "", col = "blue", xlab = "Total steps per day", 
 ```
 
 ## The mean and median steps per day:
+
 - The mean steps per day is: `r as.integer(mean(stpsday$totalsteps, na.rm = TRUE))`
 - The median steps per day is: `r as.integer(median(stpsday$totalsteps, na.rm = TRUE))`
 
 
-#What is the average daily activity pattern?
+# What is the average daily activity pattern?
 
-- A time series of the average number of steps per interval
+## A time series of the average number of steps per interval
 ```{r echo=TRUE}
 stpsint <- myset %>% group_by(interval) %>% summarise(meansteps = mean(steps, na.rm = TRUE))
 plot(stpsint, type = "l", main = "Mean steps per interval")
 ```
 
+## Highest mean interval
 - The interval with the highest mean is: `r  stpsint[stpsint$meansteps == max(stpsint$meansteps),1]`.
 
 
-#Imputing missing values
+# Imputing missing values
 
 - The total number of rows is: `r nrow(myset)`. The number of rows with missing values is: `r sum(is.na(myset))`.
 
-- create a dataset with the missing data filled in on basis of de mean steps per interval
+- Create a dataset with the missing data filled in on basis of de mean steps per interval:
 
 ```{r echo=TRUE}
 myset2 <- myset
@@ -64,7 +69,7 @@ for (i in 1:nrow(myset2)){
 }
 ```
 
-- a histogram of the total number of steps per day with the new dataset
+- A histogram of the total number of steps per day with the new dataset:
 
 ```{r echo=TRUE}
 stpsday2 <- myset2 %>% group_by(date) %>% summarise(totalsteps = sum(steps))
@@ -79,7 +84,7 @@ hist(stpsday2$totalsteps, main = "Total steps a day, na's replaced with interval
 There's no significant difference between the mean and median of the number of steps in the two datasets. Imputing the data has made no difference. 
 
 
-#Are there differences in activity patterns between weekdays and weekends?
+# Are there differences in activity patterns between weekdays and weekends?
 
 - Create a new factor with two levels: weekdays and weekends. Add it to the dataset and fill it to indicate whether the date is a weekday or a weekend day.
 
